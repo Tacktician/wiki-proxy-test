@@ -1,12 +1,18 @@
 steps:
   # build the container image
   - name: 'gcr.io/cloud-builders/docker'
+    options:
+      substitution_option: 'ALLOW_LOOSE'
     args: [ 'build', '-t', 'gcr.io/$PROJECT_ID/wiki-proxy:$CI_COMMIT_SHORT_SHA', '.' ]
     # push the container image
   - name: 'gcr.io/cloud-builders/docker'
+    options:
+      substitution_option: 'ALLOW_LOOSE'
     args: [ 'push', 'gcr.io/$PROJECT_ID/wiki-proxy:$CI_COMMIT_SHORT_SHA']
     # deploy to Cloud Run
   - name: "gcr.io/cloud-builders/gcloud"
+    options:
+      substitution_option: 'ALLOW_LOOSE'
     args: [
         'run', 'deploy', 'wiki-proxy',
         '--image', 'gcr.io/$PROJECT_ID/wiki-proxy:$CI_COMMIT_SHORT_SHA',
