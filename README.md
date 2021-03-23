@@ -1,4 +1,4 @@
-# Proxy Server IAC for wiki.saucelabs.com
+# Proxy Server for wiki.saucelabs.com
 
 This repo is the source code for the NGINX container that handles ingress traffic management (301 redirects/rewrites) for the domain wiki.saucelabs.com.
 
