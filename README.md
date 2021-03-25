@@ -45,8 +45,7 @@ __Table Of Contents__
    
 ### NGINX Quickstart for macOSX Users (optional)
 
-This method is for troubleshooting a faulty NGNIX config. For example if you container fails to run/exits after deployment, it's most likely due to an invalid NGINX config.
-To attempt this step you need to run an `nginx` binary on your local machine (non-container deployment) to test your `ngnix.conf` file from a `bash/zsh` terminal:
+This method is for troubleshooting a faulty NGNIX config. For example if your `docker` container fails to run/exits after deployment, it's most likely due to an invalid NGINX config. In order to troubleshoot the config, you need to run an `nginx` binary on your local machine (non-container deployment) and test from a `bash/zsh` terminal:
 
 > **WARNING**: This approach is for **TESTING-ONLY**. **DO NOT EDIT THE `nginx.conf` file in the project directory**. 
 > 
