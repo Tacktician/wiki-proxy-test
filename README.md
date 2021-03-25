@@ -5,57 +5,15 @@ This repo is the source code for the NGINX container that handles ingress traffi
 __Table Of Contents__
 
 1. [Dev Requirements](#dev-requirements)
-   * [NGINX Quickstart for OSX](#nginx-quickstart-for-macosx-users)
 2. [Docker Container Quickstart](#run-docker-container-locally)
+   * [NGINX Quickstart for OSX (Optional)](#nginx-quickstart-for-macosx-users-optional)
 3. [Updating the `.conf` Files](#updating-the-conf-files)
    * [Common NGNIX Errors](#common-nginx-config-errors)
     
 ## Dev Requirements
 
 * [Docker](https://docs.docker.com/get-docker/) Installed (to test the `docker` container)
-* [NGINX](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) Installed (to test `nginx` config before committing your work)
-
-### NGINX Quickstart for macOSX Users
-
-1. Install NGINX:
-   ```
-   brew install nginx
-   ```
-2. Run NGINX:
-   ```
-   sudo nginx
-   ```
-3. Copy the configs from this repo and overwrite the default config:
-   ```
-   mv /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.bak
-   cp nginx.conf /usr/local/etc/nginx/nginx.conf
-   cp map.conf /usr/local/etc/nginx/nginx.conf
-   ```
-4. Change the `include` in `nginx.conf`:
-   ```
-   http {
-       include /etc/nginx/conf.d/map.conf;
-   ```
-   to:
-   ```
-   http {
-       include /usr/local/etc/nginx/map.conf;
-   ```
-5. Save the file and run an `nginx` syntax check:
-   ```
-   nginx -t
-   ```
-   A successful config reload looks  like  the following:
-   ```
-   nginx: the configuration file /usr/local/etc/nginx/nginx.conf syntax is ok
-   nginx: configuration file /usr/local/etc/nginx/nginx.conf test is successful
-   ```
-6. Reload the NGINX config and run a test:
-   ```
-   nginx -s reload
-   curl localhost:8080/display/DOCS/Job%2C+User%2C+and+Integrations+Settings+for+Organizations
-   ```
-   > If you encounter errors please visit the [Common `nginx` Config Errors](#common-nginx-config-errors) section.
+* [NGINX (Optional)](https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/) Installed (to test `nginx` config before committing your work)
 
 ## Run Docker Container Locally
 
@@ -63,15 +21,16 @@ __Table Of Contents__
    ```
    git clone <repo>.git
    ```
-2. Build the docker container by running the following command in the root project directory:
+2. [Change the values in `map.conf`](#updating-the-conf-files) as needed
+3. Build the docker container by running the following command in the root project directory:
    ```
    docker build -t proxy .
    ```
-3. After the container finishes building, run the container:
+4. After the container finishes building, run the container:
    ```
    docker run --name mynginx -p 80:8080 -d proxy
    ```
-4. Hit the container to test that the redirects work 
+5. Hit the container to test that the redirects work 
    >  (`$request_uri` examples are located [here](https://docs.google.com/spreadsheets/d/1nFp0ioLxgR03aEENrOgCsnvdFWx5IohbTfRQ3SHCgx0/edit#gid=0))
    
    For Example:
@@ -84,12 +43,76 @@ __Table Of Contents__
    https://docs.saucelabs.com/basics/acct-team-mgmt-hub
    ```
    
+### NGINX Quickstart for macOSX Users (optional)
+
+This method is for troubleshooting a faulty NGNIX config. For example if you container fails to run/exits after deployment, it's most likely due to an invalid NGINX config.
+To attempt this step you need to run an `nginx` binary on your local machine (non-container deployment) to test your `ngnix.conf` file from a `bash/zsh` terminal:
+
+> **WARNING**: This approach is for **TESTING-ONLY**. **DO NOT EDIT THE `nginx.conf` file in the project directory**. 
+> 
+> Instead, we recommend you copy the `.conf` files and overwrite the default configs on your local machine.
+>
+> See step `3` below for more details.
+
+1. Install NGINX:
+   ```
+   brew install nginx
+   ```
+2. Run NGINX:
+   ```
+   sudo nginx
+   ```
+3. Copy the `.conf` files from the project directory, and paste them into NGINX's default config location on your local machine:
+   ```
+   # This command backs up the default config
+   mv /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.bak
+   # These commands copy the `.conf` files to the default location
+   cp nginx.conf /usr/local/etc/nginx/nginx.conf
+   cp map.conf /usr/local/etc/nginx/nginx.conf
+   ```
+   > If you installed `nginx` on Windows or Linux, the default location varies.
+4. Change the `include` in `nginx.conf` so it can locate `map.conf`. If you followed the step above, it should live in the same place as `nginx.conf`. 
+
+   For example:  
+   ```
+   http {
+       include /etc/nginx/conf.d/map.conf;
+   ```  
+   Changes to:   
+   ```
+   http {
+       include /usr/local/etc/nginx/map.conf;
+   ```
+5. Save the file and run an `nginx` syntax check
+   ```
+   nginx -t
+   ```
+   Below is an example of a successful config reload:
+   ```
+   nginx: the configuration file /usr/local/etc/nginx/nginx.conf syntax is ok
+   nginx: configuration file /usr/local/etc/nginx/nginx.conf test is successful
+   ```
+6. After you perform the syntax check, send the `reload` signal (`-s`) to the `nginx` process:
+   ```
+   nginx -s reload
+   ```
+7. Finally, run a test on a `localhost` browser. 
+
+   For example:
+   ```
+   http://localhost:8080/display/DOCS/Job%2C+User%2C+and+Integrations+Settings+for+Organizations
+   ```
+   Should redirect to:
+   ```
+   https://docs.saucelabs.com/basics/acct-team-mgmt/org-settings
+   ```
+                                                                                                                                                                                 >
 ## Updating the `.conf` Files
 
-When you need to add a new  redirect entry for `wiki.saucelabs.com` follow these steps:
+When you need to add a new redirect entry for a given `$host` (e.g. `wiki.saucelabs.com`) follow these steps:
 
 1. Open `map.conf`
-2. Add the line in the appropriate section e.g.
+2. Add the line in the appropriate section
    ```
    #---------------web apps section------------------
    /display/DOCS/Account+and+Team+Management   /basics/acct-team-mgmt-hub;
@@ -99,7 +122,7 @@ When you need to add a new  redirect entry for `wiki.saucelabs.com` follow these
    ```
    nginx -t
    ```
-4. Commit your work to this repo
+4. Commit your work to a new branch
 
 ### Common `nginx` Config Errors
 
