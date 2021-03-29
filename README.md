@@ -77,7 +77,7 @@ This method is for troubleshooting a faulty NGNIX config. For example if your `d
    > If you running `nginx` on Windows or Linux, the default file locations vary.
    ```
    cp nginx.conf /usr/local/etc/nginx/nginx.conf
-   cp map.conf /usr/local/etc/nginx/nginx.conf
+   cp map.conf /usr/local/etc/nginx/map.conf
    ```
 4. Change the `include` directive in `nginx.conf` so that it can locate `map.conf`. It should be in the same place as `nginx.conf`. 
 
