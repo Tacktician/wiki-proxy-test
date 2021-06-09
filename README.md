@@ -70,15 +70,25 @@ This method is for troubleshooting a faulty NGNIX config. For example if your `d
 3. Copy the `.conf` files from the project directory, and paste them into NGINX's default config location on your local machine:
    
    This command backs up the default config
+   > If you running `nginx` on Windows or Linux, the default file locations vary.
    ```
    mv /usr/local/etc/nginx/nginx.conf /usr/local/etc/nginx/nginx.conf.bak
    ```
-   These commands copy the `.conf` files to the default location
-   > If you running `nginx` on Windows or Linux, the default file locations vary.
+   or _if you're using a new maxOSX with the M1 chip_:
+   ```
+   mv /opt/homebrew/etc/nginx/nginx.conf /opt/homebrew/etc/nginx/nginx.conf.bak
+   ```
+   These commands copy the `.conf` files to the default location from your __gitlab project location__:
    ```
    cp nginx.conf /usr/local/etc/nginx/nginx.conf
    cp map.conf /usr/local/etc/nginx/map.conf
    ```
+   or _if you're using a new maxOSX with the M1 chip_:
+   ```
+   cp nginx.conf /opt/homebrew/etc/nginx/nginx.conf
+   cp map.conf /opt/homebrew/etc/nginx/map.conf
+   ```
+
 4. Change the `include` directive in `nginx.conf` so that it can locate `map.conf`. It should be in the same place as `nginx.conf`. 
 
    For example:  
@@ -90,6 +100,11 @@ This method is for troubleshooting a faulty NGNIX config. For example if your `d
    ```
    http {
        include /usr/local/etc/nginx/map.conf;
+   ```
+   or _if you're using a new maxOSX with the M1 chip_:
+   ```
+   http {
+       include /opt/homebrew/etc/nginx/map.conf;
    ```
 5. Save the file and run an `nginx` syntax check:
    ```
