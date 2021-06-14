@@ -1,6 +1,27 @@
-image: google/cloud-sdk
+stages:
+  - test
+  - deploy
+
+link_check:
+  image: node:latest
+  stage: test
+  only:
+    - merge_requests
+  script:
+    - npm install
+    - node check_links.js
+
+redirect_check:
+  image: node:latest
+  stage: test
+  only:
+    - merge_requests
+  script:
+    - npm install
+    - node check_redirect.js
 
 deploy:
+  image: google/cloud-sdk
   stage: deploy
   only:
     - master
