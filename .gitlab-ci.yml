@@ -28,6 +28,5 @@ deploy:
   script:
     - gcloud auth activate-service-account --key-file $GCP_SERVICE_KEY
     - gcloud config set project $GCP_PROJECT_ID
-    - gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/$GCP_CONTAINER_NAME:$CI_COMMIT_SHORT_SHA --async
-    - sleep 30
+    - gcloud builds submit --tag gcr.io/$GCP_PROJECT_ID/$GCP_CONTAINER_NAME:$CI_COMMIT_SHORT_SHA
     - gcloud run deploy $GCP_RUN_SERVICE --image gcr.io/$GCP_PROJECT_ID/$GCP_CONTAINER_NAME:$CI_COMMIT_SHORT_SHA --region=us-west1 --platform managed --port 8080
